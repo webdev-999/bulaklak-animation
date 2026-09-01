@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message Animation</title>
+    <title>Broken Message</title>
     <style>
         body {
             margin: 0;
@@ -16,6 +16,7 @@
             justify-content: center;
             height: 100vh;
             overflow: hidden;
+            cursor: pointer;
         }
         .container {
             text-align: center;
@@ -28,6 +29,11 @@
             text-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
             min-height: 50px;
             letter-spacing: 2px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+        #textDisplay.show {
+            opacity: 1;
         }
         #emojiDisplay {
             font-size: 80px;
@@ -40,44 +46,75 @@
             opacity: 1;
             transform: scale(1);
         }
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #ff77aa;
+            z-index: 10;
+            cursor: pointer;
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
+
+    <div id="overlay">
+        I-click mo 'to... para sa katotohanan 💔
+    </div>
 
     <div class="container">
         <div id="textDisplay"></div>
         <div id="emojiDisplay">🖕</div>
     </div>
-    
-<audio id="sadMusic" loop>
-    <source src="Paano Ba Ang Magmahal Piolo & Sarah #breakup #songlyrics #lifesong #sarahgeronimo.mp3" type="audio/mpeg">
-</audio>
-    
+
+    <!-- Eksaktong GitHub Raw link ng MP3 mo -->
+    <audio id="sadMusic" loop>
+        <source src="https://raw.githubusercontent.com/webdev-999/bulaklak-animation/main/Paano%20Ba%20Ang%20Magmahal%20Piolo%20&%20Sarah%20%23breakup%20%23songlyrics%20%23lifesong%20%23sarahgeronimo.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
         const words = ["HINDI", "KANA", "NYA", "MAHAL"];
         const textDisplay = document.getElementById("textDisplay");
         const emojiDisplay = document.getElementById("emojiDisplay");
+        const overlay = document.getElementById("overlay");
+        const music = document.getElementById("sadMusic");
         
         let wordIndex = 0;
 
         function showWords() {
             if (wordIndex < words.length) {
-                // Idadagdag ang bawat salita isa-isa
+                textDisplay.classList.add("show");
                 textDisplay.innerHTML += (wordIndex === 0 ? "" : " ") + words[wordIndex];
                 wordIndex++;
-                setTimeout(showWords, 600); // Bilis ng paglabas per word (milliseconds)
+                setTimeout(showWords, 650);
             } else {
-                // Pagkatapos lumabas ng lahat ng salita, lalabas ang emoji paglipas ng konting segundo
                 setTimeout(() => {
                     emojiDisplay.classList.add("show");
-                }, 400);
+                }, 800);
             }
         }
 
-        // Simulan ang animation pag-load ng page
-        window.onload = () => {
-            setTimeout(showWords, 500);
-        };
+        function startExperience() {
+            overlay.style.display = 'none';
+            music.volume = 0.8;
+            music.play().catch(e => console.log("Music error:", e));
+            setTimeout(showWords, 300);
+            document.body.removeEventListener('click', startExperience);
+            overlay.removeEventListener('click', startExperience);
+        }
+
+        document.body.addEventListener('click', startExperience);
+        overlay.addEventListener('click', startExperience);
     </script>
 </body>
 </html>
