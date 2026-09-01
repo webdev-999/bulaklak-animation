@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magandang Bulaklak Animation</title>
+    <title>Message Animation</title>
     <style>
         body {
             margin: 0;
-            background: #0f0c1b;
+            background: #0b0914;
             color: #fff;
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -17,100 +17,63 @@
             height: 100vh;
             overflow: hidden;
         }
-        canvas {
-            background: #18142c;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
+        .container {
+            text-align: center;
+            padding: 20px;
         }
-        .title {
-            margin-bottom: 15px;
-            font-size: 22px;
+        #textDisplay {
+            font-size: 32px;
             font-weight: bold;
-            color: #ff77aa;
-            text-shadow: 0 0 10px rgba(255, 119, 170, 0.5);
+            color: #ff3366;
+            text-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+            min-height: 50px;
+            letter-spacing: 2px;
+        }
+        #emojiDisplay {
+            font-size: 80px;
+            margin-top: 25px;
+            opacity: 0;
+            transform: scale(0.2);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #emojiDisplay.show {
+            opacity: 1;
+            transform: scale(1);
         }
     </style>
 </head>
 <body>
 
-    <div class="title">Para sa'yo, Isang Lumalagong Bulaklak 🌸</div>
-    <canvas id="animCanvas" width="400" height="400"></canvas>
+    <div class="container">
+        <div id="textDisplay"></div>
+        <div id="emojiDisplay">🖕</div>
+    </div>
 
     <script>
-        const canvas = document.getElementById("animCanvas");
-        const ctx = canvas.getContext("2d");
+        const words = ["HINDI", "KANA", "NYA", "MAHAL"];
+        const textDisplay = document.getElementById("textDisplay");
+        const emojiDisplay = document.getElementById("emojiDisplay");
+        
+        let wordIndex = 0;
 
-        let scale = 0.05;      
-        let maxScale = 1.0;    
-        let rotationAngle = 0; 
-        let bloomSpeed = 0.02; 
-
-        function drawFlower(x, y, radius, petals, angle) {
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(angle);
-
-            for (let i = 0; i < petals; i++) {
-                ctx.save();
-                ctx.rotate((i * 2 * Math.PI) / petals);
-                ctx.beginPath();
-                let gradient = ctx.createRadialGradient(0, radius, 2, 0, radius * 2, radius * 1.5);
-                gradient.addColorStop(0, "#ff69b4");
-                gradient.addColorStop(1, "#da70d6");
-                ctx.fillStyle = gradient;
-                
-                ctx.ellipse(0, radius, radius * 0.5, radius * 1.2, 0, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.restore();
-            }
-
-            ctx.beginPath();
-            ctx.arc(0, 0, radius * 0.4, 0, 2 * Math.PI);
-            let centerGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, radius * 0.4);
-            centerGrad.addColorStop(0, "#ffeb3b");
-            centerGrad.addColorStop(1, "#ff9800");
-            ctx.fillStyle = centerGrad;
-            ctx.fill();
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = "#fff";
-            ctx.stroke();
-
-            ctx.restore();
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if (scale < maxScale) {
-                scale += bloomSpeed;
+        function showWords() {
+            if (wordIndex < words.length) {
+                // Idadagdag ang bawat salita isa-isa
+                textDisplay.innerHTML += (wordIndex === 0 ? "" : " ") + words[wordIndex];
+                wordIndex++;
+                setTimeout(showWords, 600); // Bilis ng paglabas per word (milliseconds)
             } else {
-                rotationAngle += 0.015;
+                // Pagkatapos lumabas ng lahat ng salita, lalabas ang emoji paglipas ng konting segundo
+                setTimeout(() => {
+                    emojiDisplay.classList.add("show");
+                }, 400);
             }
-
-            let centerX = canvas.width / 2;
-            let centerY = canvas.height / 2;
-            let baseRadius = 50 * scale;
-
-            if (scale > 0.2) {
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(centerX, centerY + 120 * scale);
-                ctx.lineWidth = 6 * scale;
-                ctx.strokeStyle = "#4caf50";
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.ellipse(centerX - 25 * scale, centerY + 70 * scale, 15 * scale, 8 * scale, -Math.PI / 4, 0, 2 * Math.PI);
-                ctx.fillStyle = "#66bb6a";
-                ctx.fill();
-            }
-
-            drawFlower(centerX, centerY, baseRadius, 8, rotationAngle);
-
-            requestAnimationFrame(animate);
         }
 
-        animate();
+        // Simulan ang animation pag-load ng page
+        window.onload = () => {
+            setTimeout(showWords, 500);
+        };
     </script>
 </body>
 </html>
